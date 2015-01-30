@@ -15,7 +15,7 @@ import (
 //	sitestoblock := make(map[string]struct{})
 	
 
-	content, err := ioutil.ReadFile("../config.txt")
+	content, err := ioutil.ReadFile("config.txt")
 	if err != nil {
 		//Do something
 		golog.Err(err.Error())

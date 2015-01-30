@@ -3,6 +3,9 @@ package main
 import (
     "flag"
     "fmt"
+    "startones"
+    "log"
+    "log/syslog"
 )
 
 const APP_VERSION = "0.1"
@@ -16,5 +19,17 @@ func main() {
     if *versionFlag {
         fmt.Println("Version:", APP_VERSION)
     }
+    	golog, err := syslog.New(syslog.LOG_ERR, "golog")
+
+	defer golog.Close()
+	if err != nil {
+		log.Fatal("error writing syslog!!")
+	}
+    
+    
+    startpar :=startones.Start(*golog)
+    
+     fmt.Println(startpar[0])
+    
 }
 
