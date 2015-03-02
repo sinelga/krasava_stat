@@ -1,30 +1,36 @@
 package startones
 
 import (
-//	"github.com/garyburd/redigo/redis"
-	"io/ioutil"
+
+
+	"code.google.com/p/gcfg"
+	"log"
 	"log/syslog"
-//	"os"
-	"strings"
-//	"fmt"
+	"domains"
 )
 
-//func Start(golog syslog.Writer) ([]string,map[string]struct{}) {
-  func Start(golog syslog.Writer) ([]string) {
-	
-//	sitestoblock := make(map[string]struct{})
-	
+var config domains.Config
 
-	content, err := ioutil.ReadFile("config.txt")
+func Start() (syslog.Writer, domains.Config) {
+
+	golog, err := syslog.New(syslog.LOG_ERR, "golog")	
+
+	defer golog.Close()
 	if err != nil {
-		//Do something
-		golog.Err(err.Error())
+		log.Fatal("error writing syslog!!")
 	}
-	parameters := strings.Split(string(content), ",")
-	cleanparameters := []string{strings.TrimSpace(parameters[0]), strings.TrimSpace(parameters[1]), strings.TrimSpace(parameters[2])}
 
+	
+	err = gcfg.ReadFileInto(&config, "config.ini")
+	if err != nil {
+		
+		golog.Crit("cannot read configuration file config.ini" + err.Error())
 
+	}
+	
+	golog.Info(config.Database.ConStr)
 
-	return cleanparameters
+	return *golog, config
+
 
 }
